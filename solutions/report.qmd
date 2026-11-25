@@ -1,0 +1,88 @@
+---
+title: "Feasibility of an endometriosis NSAID study"
+execute:
+  echo: false
+  message: false
+---
+
+::: {.callout-note}
+This report was generated using AI under general human direction. At the time of generation, the contents have not been comprehensively reviewed by a human analyst.
+
+<!--
+To indicate human review: Delete the line above about contents not being reviewed, and replace this comment with:
+The contents have been reviewed and validated by [Your Name], [Your Role] on [Date].
+-->
+:::
+
+# Introduction
+
+This report assesses whether a study is feasible in patients who have pharmacy coverage, at least two endometriosis claims, and NSAID use as a treatment. Candidates come from `candidates.csv`. Subgroups are defined by the combinations of age band and region, and a subgroup is considered large enough if it has at least 30 patients.
+
+The cohort definition assumes that `n_index_claims` counts endometriosis claims.
+
+```{r}
+#| label: setup
+#| message: false
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(bslib)
+library(bsicons)
+library(reactable)
+
+source("helpers.R")
+candidates <- read.csv("candidates.csv")
+```
+
+# Cohort definition
+
+Patients are kept if they have pharmacy coverage (`rx_coverage == "Y"`), at least two endometriosis claims (`n_index_claims >= 2`), and NSAID use (`tx_nsaid`).
+
+```{r}
+#| label: filter-cohort
+cohort <- candidates |>
+  filter(rx_coverage == "Y", n_index_claims >= 2, tx_nsaid)
+
+subgroup_counts <- count_subgroup_cells(cohort, "age_band", "region")
+```
+
+Of `{r} format(nrow(candidates), big.mark = ",")` candidates, `{r} format(nrow(cohort), big.mark = ",")` meet the criteria.
+
+# Subgroup feasibility
+
+```{r}
+#| label: value-boxes
+layout_column_wrap(
+  width = "220px",
+  cohort_value_box(cohort, title = "Candidates meeting criteria"),
+  subgroups_value_box(cohort, "age_band", "region"),
+  smallest_subgroup_value_box(cohort, "age_band", "region")
+)
+```
+
+# Patient counts by subgroup
+
+```{r}
+#| label: subgroup-heatmap
+subgroup_heatmap(cohort, "age_band", "region")
+```
+
+# Observations
+
+`{r} sum(subgroup_counts$meets_min)` of `{r} nrow(subgroup_counts)` subgroups have at least 30 patients. The smallest subgroup has `{r} min(subgroup_counts$n)` patients.
+
+The subgroups below 30 patients are:
+
+```{r}
+#| label: small-subgroups
+subgroup_counts |>
+  filter(!meets_min) |>
+  arrange(n)
+```
+
+# Matching patients
+
+```{r}
+#| label: cohort-table
+reactable(cohort, filterable = TRUE, compact = TRUE, wrap = FALSE)
+```

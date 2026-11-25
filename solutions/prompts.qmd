@@ -1,0 +1,54 @@
+---
+title: "Prompts"
+format: html
+---
+
+The final section of helpers.R describes a function named subgroup_heatmap, but does not define it. Please write a function definition that matches the description and add it beneath the description. Use the example code to confirm that the new function works.
+
+***
+
+I want to know if it is feasible to design a study of patients who have pharmacy coverage, at least two claims, and have used NSAIDs as a treatment. Load candidates.csv, filter it to patients who match my description, and create subgroups based on the combinations of age_band and region. Use helpers.R to show me value boxes of:
+
+1. The total number of candidates who meet my description
+2. How many subgroups have at least 30 patients (out of the total number of subgroups)
+3. The smallest number of patients in a subgroup
+
+Then show me a heatmap of the patient counts within each subgroup.
+
+***
+
+/report create a report named report.qmd
+
+***
+
+Add a section to the bottom of report.qmd that uses reactable() to display the rows that match my criteria. Use the same arguments as in the reactable() call in misc.R. 
+
+***
+
+Edit report.qmd to make a quarto dashboard. The dashboard should have two rows:
+
+1. The first row should contain
+
+
+***
+
+(Example completion of above prompt)
+
+Edit report.qmd to make a quarto dashboard. The dashboard should have two rows:
+
+1. The first row should contain the three value boxes that appear in the report. This row should take up about 20% of the height of the app.
+2. The second row should contain the heatmap that appears in the report.
+
+***
+
+Study the contents and layout of the dashboard created by report.qmd. Then make a Shiny app that replicates the dashboard, including its layout proportions. Increase the size of the text in the heatmap to 20. Add three widgets to the app's sidebar that the user can use to select candidate criteria:
+
+1. Radio buttons that select the number of claims
+2. A switch that selects whether the patient has pharmacy coverage
+3. A dropdown menu that selects which treatment, if any, the patient has received
+
+Add two dropdown menus below the heatmap, in the same card as the heat map, that allow users select x and y variables from the cohort data to determine which subgroups the heatmap and value boxes describe. Save the results as app.R.
+
+***
+
+Rewrite app.R to replace the sidebar widgets with a chatbot built with R's querychat() package. User's should be able to use the chatbot to filter candidates to a cohort of patients who meet their criteria.

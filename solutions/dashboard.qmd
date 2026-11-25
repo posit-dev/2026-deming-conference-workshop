@@ -1,0 +1,50 @@
+---
+title: "Feasibility of an endometriosis NSAID study"
+format: dashboard
+execute:
+  echo: false
+  message: false
+---
+
+```{r}
+#| label: setup
+#| message: false
+library(dplyr)
+library(ggplot2)
+library(scales)
+library(bslib)
+library(bsicons)
+
+source("helpers.R")
+candidates <- read.csv("candidates.csv")
+```
+
+```{r}
+#| label: filter-cohort
+cohort <- candidates |>
+  filter(rx_coverage == "Y", n_index_claims >= 2, tx_nsaid)
+```
+
+## Row {height=20%}
+
+```{r}
+#| label: value-box-cohort
+cohort_value_box(cohort, title = "Candidates meeting criteria")
+```
+
+```{r}
+#| label: value-box-subgroups
+subgroups_value_box(cohort, "age_band", "region")
+```
+
+```{r}
+#| label: value-box-smallest
+smallest_subgroup_value_box(cohort, "age_band", "region")
+```
+
+## Row {height=80%}
+
+```{r}
+#| label: subgroup-heatmap
+subgroup_heatmap(cohort, "age_band", "region")
+```
